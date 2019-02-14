@@ -5,11 +5,14 @@
 import time
 
 from emokit.emotiv import Emotiv
+from emokit.sensors import sensors_mapping
 
 if __name__ == "__main__":
-    with Emotiv(display_output=True, serial_number="SN201203266968GM", verbose=False) as headset:
+    with Emotiv() as headset:
         while True:
             packet = headset.dequeue()
             if packet is not None:
+                print(packet.raw_data)
+                # Do something with the raw data here
                 pass
             time.sleep(0.001)
