@@ -3,7 +3,7 @@ import os
 import time
 from threading import Thread, Lock
 
-from packet import EmotivExtraPacket
+from .packet import EmotivExtraPacket
 from .python_queue import Queue
 from .sensors import sensors_mapping
 from .util import get_quality_scale_level, system_platform
@@ -155,7 +155,7 @@ class EmotivOutput(object):
                         crypto_rate=str(packets_processed_since_last_update),
                         received=str(self.packets_received),
                         processed=str(self.packets_processed),
-                        old_model=self.old_model
+                        old_model=str(self.old_model)
                     ))
                     dirty = False
             self.lock.acquire()

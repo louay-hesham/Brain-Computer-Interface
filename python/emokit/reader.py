@@ -6,6 +6,7 @@ import sys
 import time
 from datetime import datetime
 from threading import Thread, Lock
+from cffi import FFI
 
 from .python_queue import Queue
 from .tasks import EmotivReaderTask
@@ -16,6 +17,7 @@ if system_platform == "Windows":
 else:
     import hidapi
 
+ffi = FFI()
 
 class EmotivReader(object):
     """
@@ -32,7 +34,7 @@ class EmotivReader(object):
         self.serial_number = None
         self.lock = Lock()
         if self.platform != "Windows":
-            hidapi.hid_init()
+            hidapi.hidapi.hid_init()
         self.setup_platform = {
             'Windows': self.setup_windows,
             'Darwin': self.setup_not_windows,
@@ -98,6 +100,7 @@ class EmotivReader(object):
                 except Exception as ex:
 
                     print("Reader Error: {}".format(ex.message))
+                    # print(ex)
                     # Catching StopIteration for some reason stops at the second record,
                     #  even though there are more results.
             else:
@@ -198,7 +201,7 @@ class EmotivReader(object):
                 print_hid_enumerate(system_platform, hidapi)
                 raise Exception("Device not found")
             self.serial_number = serial_number
-            self.hid = hidapi.hid_open_path(path)
+            self.hid = hidapi.hidapi.hid_open_path(path)
 
 
 def read_csv(source):
@@ -233,10 +236,17 @@ def read_non_windows(source, new_format=False):
     # Doesn't seem to matter how big we make the buffer 32 returned every time, 33 for other platforms
     # Set timeout for 1 second, to help with thread shutdown.
     if new_format:
-        data = validate_data(hidapi.hid_read_timeout(source, 64, 1000), new_format)
+        cpointer = ffi.new("unsigned char[]", [1]*64)
+        hidapi.hidapi.hid_read_timeout(source, cpointer, 64, 1000)
+        data = [cpointer[i] for i in range(0,64)]
+        data = validate_data(data, new_format)
     else:
-        data = validate_data(hidapi.hid_read_timeout(source, 34, 1000), new_format)
+        cpointer = ffi.new("unsigned char[]", [1]*32)
+        hidapi.hidapi.hid_read_timeout(source, cpointer, 34, 1000)
+        data = [cpointer[i] for i in range(0,32)]
+        data = validate_data(data, new_format)
     if data is not None:
+        # print(data)
         return ''.join(map(chr, data[1:]))
 
 

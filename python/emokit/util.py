@@ -49,7 +49,7 @@ def get_level(data, bits, verbose=False):
         level <<= 1
         b = (bits[i] // 8) + 1
         o = bits[i] % 8
-        bit_list.append(str(ord(data[b]) >> o & 1))
+        bit_list.append(str(data[b] >> o & 1))
         if sys.version_info >= (3, 0):
             level |= (data[b] >> o) & 1
         else:
@@ -264,7 +264,7 @@ def print_hid_device_info_all(device):
 
 
 def hid_enumerate_nix(hidapi):
-    return hidapi.hid_enumerate()
+    return hidapi.enumerate()
 
 
 def hid_enumerate_win(hidapi):
