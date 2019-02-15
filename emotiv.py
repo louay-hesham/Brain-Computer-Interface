@@ -8,4 +8,4 @@ if __name__ == "__main__":
             if data is not None:
                 data
                 # Do something with raw data here
-            time.sleep(0.01)
+            time.sleep(0.05)
