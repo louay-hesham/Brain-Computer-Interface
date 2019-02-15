@@ -1,3 +1,15 @@
+This library is used to access EPOC's raw EEG data without the need of a license from EMOTIV.
+
+This is for educational purposes only.
+
+This is a slightly modified version from the [original Emokit](https://github.com/openyou/emokit)
+
+Modifications
+=============
+* Fixed the usage of hidapi in code
+* Made output thread to not exit when an exception is thrown
+* Added an extra class for a custom printing of raw EEG data and fetching the sensor data
+
 Emokit
 ======
 
@@ -83,47 +95,6 @@ python setup.py install
 
 hidapi will still need to be installed manually on Linux and OS X.
 
-
-Usage
-=====
-
-Python library
---------------
-
-  Code:
-
-    # -*- coding: utf-8 -*-
-    # This is an example of popping a packet from the Emotiv class's packet queue
-
-
-    import time
-
-    from emokit.emotiv import Emotiv
-
-    if __name__ == "__main__":
-        with Emotiv(display_output=True, verbose=True) as headset:
-            while True:
-                packet = headset.dequeue()
-                if packet is not None:
-                   pass
-                time.sleep(0.001)
-
-
-Bindings
-========
-
-Go: https://github.com/fractalcat/emogo
-
-
-Running Unit Tests
-==================
-
-From the python directory in your terminal type:
-
-  Code:  
-
-    python -m pytest tests/
-      
 
 Platform Specifics Issues
 =========================
