@@ -5,13 +5,19 @@ from .sensors import sensors_mapping
 from .util import system_platform
 
 class Headset(Emotiv):
+    """
+        Child class of emokit.emotiv.
+        Adds extra functionality like extracting the actual sensor data and printing them.
+        The old printing mechanism sometimes throws exceptions which will render the printing functionality useless.
+    """
 
     def get_sensors_raw_data(self, print=False):
         packet = self.dequeue()
         if packet is None:
             return None
         else:
-            self.print_raw_data(packet.sensors)
+            if print:
+                self.print_raw_data(packet.sensors)
             return packet.sensors
 
     def print_raw_data_legacy(self):
@@ -26,12 +32,13 @@ class Headset(Emotiv):
                 os.system('cls')
             else:
                 os.system('clear')
+
         output_template = """
-        +=================================================================================================================================+
-        |   AF3   |   F7   |   F3   |   FC5   |   T7   |   P7   |   O1   |   O2   |   P8   |   T8   |   FC6   |   F4   |   F8   |   AF4   |
-        +---------+--------+--------+---------+--------+--------+--------+--------+--------+--------+---------+--------+--------+---------+
-        |{AF3}|{F7}|{F3}|{FC5}|{T7}|{P7}|{O1}|{O2}|{P8}|{T8}|{FC6}|{F4}|{F8}|{AF4}|
-        +=================================================================================================================================+
+        +=============================================================================================================================================================+
+        |    AF3    |    F7    |    F3    |    FC5    |    T7    |    P7    |    O1    |    O2    |    P8    |    T8    |    FC6    |    F4    |    F8    |    AF4    |
+        +-----------+----------+----------+-----------+----------+----------+----------+----------+----------+----------+-----------+----------+----------+-----------+
+        | {AF3} | {F7} | {F3} | {FC5} | {T7} | {P7} | {O1} | {O2} | {P8} | {T8} | {FC6} | {F4} | {F8} | {AF4} |
+        +=============================================================================================================================================================+
         """
         print(output_template.format(
             AF3 = self.limit_digits(sensor_data['AF3']['value'], 9),
