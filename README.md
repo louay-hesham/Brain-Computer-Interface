@@ -3,4 +3,3 @@ This is a bachelor's degree graduation project. We (hopefully) increase the accu
 
 ## Modified Emokit
 A slightly modified version of the (original Emokit)[https://github.com/openyou/emokit]. Check the readme inside its folder for more info on what has been modified.
-
