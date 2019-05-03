@@ -13,19 +13,18 @@ class Headset(Emotiv):
 
     channels_order = ['AF3', 'F7', 'F3', 'FC5', 'T7', 'P7', 'O1', 'O2', 'P8', 'T8', 'FC6', 'F4', 'F8', 'AF4']
 
-    def get_sample(self, print=False):
-        data = self.get_sensors_raw_data(print)
+    def get_sample(self, print_output=False):
+        data = self.get_sensors_raw_data(print_output)
         if data is None:
             return None
         return [data[channel]['value'] for channel in Headset.channels_order]
 
-
-    def get_sensors_raw_data(self, print=False):
+    def get_sensors_raw_data(self, print_output=False):
         packet = self.dequeue()
         if packet is None:
             return None
         else:
-            if print:
+            if print_output:
                 self.print_raw_data(packet.sensors)
             return packet.sensors
 

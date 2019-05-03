@@ -2,6 +2,7 @@ import time
 from emokit.headset import Headset
 import pickle
 import xgboost as xgb
+import numpy as np
 
 if __name__ == "__main__":
     with Headset() as headset:
@@ -9,7 +10,8 @@ if __name__ == "__main__":
         while True:
             sample = headset.get_sample(print=True)
             if sample is not None:
+                sample = np.array([sample])
                 sample = xgb.DMatrix(sample)
-                prediction = model.predict(sample)
-                print("Prediction: " + prediction)
+                # prediction = model.predict(sample)
+                print()
             time.sleep(0.05)
