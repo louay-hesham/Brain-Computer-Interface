@@ -1,4 +1,8 @@
 import os
+import time
+
+from scipy.fftpack import rfft
+import numpy as np
 
 from .emotiv import Emotiv
 from .sensors import sensors_mapping
@@ -12,6 +16,22 @@ class Headset(Emotiv):
     """
 
     channels_order = ['AF3', 'F7', 'F3', 'FC5', 'T7', 'P7', 'O1', 'O2', 'P8', 'T8', 'FC6', 'F4', 'F8', 'AF4']
+
+    def get_samples_fft(self, n_samples, period, print_output=False):
+        samples = []
+        sample = None
+        while sample == None:
+            sample = self.get_sample(print_output)
+
+        for i in range(0,n_samples + 1):
+            sample = self.get_sample(print_output)
+            if not sample == None:
+                samples.append(sample)
+                time.sleep(period)
+        transposed = [list(i) for i in zip(*samples)] ## Transpose so each sub-array is the data of a channel in time domain
+        fft_transposed = [rfft(np.array(i)) for i in transposed] ## Compute FFT (real values)
+        fft_samples = [list(np.round(i, 0)) for i in zip(*fft_transposed)] ## Transpose again so each channel is in a column instead of a row, rounds to the nearest unit while transposing
+        return fft_samples[1:]
 
     def get_sample(self, print_output=False):
         data = self.get_sensors_raw_data(print_output)
