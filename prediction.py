@@ -592,7 +592,7 @@ def extract_features(samples, print_log=False):
 	                print("Optimization Finished!")
                 a = sess1.run(encoder_op, feed_dict={X: a})
                 b = sess1.run(encoder_op, feed_dict={X: b})
-    return a
+    return a, label_testing
 
 if __name__ == "__main__":
     samples_test = [
@@ -607,5 +607,5 @@ if __name__ == "__main__":
     [-64.0, -10.0, -410.0, -30.0, -48.0, -16.0, -35.0, -467.0, -1281.0, -1326.0, -1139.0, -959.0, -1141.0, -399.0],
     [31.0, 5.0, -46.0, 3.0, 1.0, -1.0, -17.0, 185.0, 200.0, 160.0, 233.0, 220.0, 234.0, 143.0]
     ]
-    a = extract_features(samples_test, print_log=True)
+    a, label_testing = extract_features(samples_test, print_log=True)
     print(a)
