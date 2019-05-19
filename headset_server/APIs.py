@@ -13,6 +13,9 @@ headset = Headset()
 
 def is_ready(request):
     global headset
+    if headset == None:
+        headset = Headset()
+        time.sleep(10)
     sample = headset.get_sample()
     if sample == None:
         headset = Headset()
@@ -39,6 +42,7 @@ def predict(request):
 
     samples = headset.get_samples_fft(samples_count, 1/freq, print_output=False)
     headset.stop()
+    headset = None
     samples_extra_features, label_testing = extract_features(samples, print_log=True)
     samples_extra_features = np.array(samples_extra_features)
     samples_extra_features = xgb.DMatrix(samples_extra_features)
@@ -46,15 +50,13 @@ def predict(request):
 
     intent_labeling = np.array(['','eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet'])
     pred_argmax = np.argmax(predictions,1)
-    # print(pred_argmax.shape)
-    # print(pred_argmax)
     copy_pred = np.empty(predictions.shape, dtype=object)
     for i in range(predictions.shape[0]):
       copy_pred[i] = intent_labeling[pred_argmax[i]]
-    print(copy_pred)
+    print(copy_pred[0][0])
 
     response = {
-    "prediction": copy_pred
+    "prediction": copy_pred[0][0]
     }
-    headset.start()
+
     return HttpResponse(json.dumps(response))
