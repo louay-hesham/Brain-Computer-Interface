@@ -1,5 +1,6 @@
 import os
 import time
+from threading import Thread
 
 from scipy.fftpack import rfft
 import numpy as np
@@ -16,6 +17,14 @@ class Headset(Emotiv):
     """
 
     channels_order = ['AF3', 'F7', 'F3', 'FC5', 'T7', 'P7', 'O1', 'O2', 'P8', 'T8', 'FC6', 'F4', 'F8', 'AF4']
+
+    def start(self):
+        """
+        Starts emotiv, called upon initialization.
+        """
+        self.running = True
+        self.thread = Thread(target=self.run)
+        self.thread.start()
 
     def get_samples_fft(self, n_samples, period, print_output=False):
         samples = []

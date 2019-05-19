@@ -41,8 +41,6 @@ def predict(request):
     time.sleep(delay)
 
     samples = headset.get_samples_fft(samples_count, 1/freq, print_output=False)
-    headset.stop()
-    headset = None
     samples_extra_features, label_testing = extract_features(samples, print_log=True)
     samples_extra_features = np.array(samples_extra_features)
     samples_extra_features = xgb.DMatrix(samples_extra_features)
@@ -58,5 +56,4 @@ def predict(request):
     response = {
     "prediction": copy_pred[0][0]
     }
-
     return HttpResponse(json.dumps(response))
