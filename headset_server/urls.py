@@ -22,4 +22,5 @@ from headset_server.APIs import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^isReady/', csrf_exempt(is_ready)),
+    url(r'^predict/', csrf_exempt(predict)),
 ]
