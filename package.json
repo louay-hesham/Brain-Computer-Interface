@@ -10,6 +10,8 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-vue": "^0.8.1",
     "vue": "^2.5.11"
   },
   "browserslist": [
