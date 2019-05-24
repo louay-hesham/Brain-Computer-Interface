@@ -12,51 +12,45 @@
 
     <sui-grid-column>
       <div class="ui card">
-        <div class="image">
-          <img src="../assets/standing.jpg">
-        </div>
-         <div class="ui two buttons">
+          <ImageCard v-bind:prediction="prediction"></ImageCard>
+          <div class="ui two buttons">
           <button class="ui button" type="submit">Start</button>
-       </div>
+          </div>
       </div>
     </sui-grid-column>
 
     <sui-grid-column>
-      <form class="ui form">
-        <h1>Settings</h1>
-      <div class="field">
-        <label>Number of samples</label>
-        <input type="text" name="number-of-samples" placeholder="Number of samples">
-      </div>
-      <div class="field">
-        <label>Frequency</label>
-        <input type="text" name="frequency" placeholder="Frequency in HZ">
-      </div>
-      <div class="field">
-        <label>Delay</label>
-        <input type="text" name="delay" placeholder="Delay in seconds">
-      </div>
-
-      <button class="ui button" type="submit">Submit</button>
-    </form>
+      <SettingsForm v-on:sendPrediction="getPrediction"></SettingsForm>
     </sui-grid-column>
-    <div class="clock">
-    </div>
+    <!-- <div class="clock">
+    </div> -->
   </sui-grid>
 </div>
 </template>
 
 <script>
+import ImageCard from './ImageCard'
+import SettingsForm from './SettingsForm'
 export default {
   name: 'Trial',
+  components: {
+      ImageCard,
+      SettingsForm
+      },
   data() {
     return {
-      msg: 'Welcome MY NAME IS YOMNAAA'
+      // start at the very begining with the man standing
+      prediction: -1
+    }
+  },
+  methods: {
+    getPrediction (prediction){
+      this.prediction = prediction
     }
   }
 }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
 h1,
 h2 {
@@ -95,14 +89,6 @@ a {
   margin-right : 10%;
   position: relative;
   top:-100px;
-}
-.image{
-  width:150px;
-  height:auto;
-  margin-left:30%;
-  margin-right:30%;
-  margin-top:2%;
-  margin-bottom:2%;
 }
 .button{
   background-color:#596B80;
