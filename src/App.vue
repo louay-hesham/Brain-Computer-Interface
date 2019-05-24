@@ -1,15 +1,18 @@
 <template>
   <div id="app">
     <Trial/>
+    <settings/>
   </div>
 </template>
 
 <script>
 import Trial from './components/Trial'
+import settings from './components/settings'
 export default {
   name: 'app',
   components: {
-    Trial
+    Trial,
+    settings
   },
   data () {
     return {
