@@ -16,12 +16,11 @@ export default {
 
 <style scoped>
 .image{
-  width:150px;
+  width:300px;
   height:auto;
-  margin-left:30%;
+  margin-left:10%;
   margin-right:30%;
   margin-top:2%;
   margin-bottom:2%;
 }
 </style>
-

@@ -53,78 +53,41 @@ export default {
 <style scoped>
 h1,
 h2 {
-  font-weight: normal;
+  font-weight: bold;
   color: #596B80;
 }
 h3{
   color: #F27584;
   letter-spacing: 3px;
+  font-size: 50px;
 }
 ul {
   list-style-type: none;
   padding: 0;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 a {
   color: #42b983;
 }
-.card{
-  margin-left : 20%;
-  width: 60%;
-
-}
-.block{
-  margin-top:0%;
-  padding-top: 0px;
-  margin-bottom:20 px;
-  position: relative;
-  top:-50px;
-  color: #596B80;
-}
 .form{
-  margin-right : 10%;
+  margin-right : 20%;
   position: relative;
-  top:-100px;
+  top:-80px;
 }
 .button{
   background-color:#596B80;
   color: white;
 }
-.clock{
-  position: absolute;
-  top: 30%;
-  left:45%;
-  transform: translate(-50%,-50%);
-  width: 150px;
-  height:150px;
-  border: 10px solid #F27584;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: -2px 2px 0 #e23232, inset 0 0 20px (0,0,0,0,0.5);
+.field>label{
+  color: white;
+  font-size:30px;
+  background-color: #596B80;
+  text-align: left;
+  padding-left:5px;
+  padding-top:2px;
+  padding-bottom:2px;
 }
-.clock:before{
-  content:'';
-  position: absolute;
-  top: 48% ;
-  left:50%;
-  width: 40%;
-  height:6px;
-  background: #262626;
-  border-radius: 3px;
-  animation: animate 10s linear infinite;
-  transform-origin: left;
-}
-@keyframes animate{
-  0%{
-    transform: rotate(0deg);
-  }
-  100%
-  {
-    transform: rotate(360deg)
-  }
+.ui.form .field>label {
+    color: white;
+    font-size: 14px;
 }
 </style>
-
