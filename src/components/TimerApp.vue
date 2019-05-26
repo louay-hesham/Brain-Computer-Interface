@@ -1,90 +1,76 @@
 <template>
   <div>
-    <section id="app" class="hero is-info is-fullheight is-bold">
-<div class="hero-body">
-<div class="container has-text-centered">
+    <!-- our template -->
+    <section id="app" >
+    <div>
+      <div id="timer">
+        <span id="minutes">{{ minutes }}</span>
+        <span id="middle">:</span>
+        <span id="seconds">{{ seconds }}</span>
+      </div>
 
-  <h2 class="title is-6">{{title}}</h2>
-
-  <div id="timer">
-    <span id="minutes">{{ minutes }}</span>
-    <span id="middle">:</span>
-    <span id="seconds">{{ seconds }}</span>
-  </div>
-
-  <div id="buttons">
-<!--     Start TImer -->
-    <button
-      id="start"
-      class="button is-dark is-large"
-      v-if="!timer"
-      @click="startTimer">
-        <i class="far fa-play-circle"></i>
-    </button>
-<!--     Pause Timer -->
-    <button
-      id="stop"
-      class="button is-dark is-large"
-      v-if="timer"
-      @click="stopTimer">
-        <i class="far fa-pause-circle"></i>
-    </button>
-<!--     Restart Timer -->
-    <button
-      id="reset"
-      class="button is-dark is-large"
-      v-if="resetButton"
-      @click="resetTimer">
-        <i class="fas fa-undo"></i>
-    </button>
-  </div>
-
-</div>
-</div>
-</section>
-
+      <div id="buttons">
+    <!--     Start TImer -->
+        <button
+          id="start"
+          class="ui button"
+          v-if="!timer"
+          @click="startTimer">
+            <i>Start</i>
+        </button>
+    <!--     Pause Timer -->
+        <button
+          id="stop"
+          class="ui button"
+          v-if="timer"
+          @click="stopTimer">
+            <i>Stop</i>
+        </button>
+    <!--     Restart Timer -->
+        <button
+          id="reset"
+          class="ui button"
+          v-if="resetButton"
+          @click="resetTimer">
+            <i>Reset</i>
+        </button>
+      </div>
+    </div>
+    </section>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'timerApp',
-  data: {
-    timer: null,
-    totalTime: (25 * 60),
-    resetButton: false,
-    title: "Let the countdown begin!!"
+  data( ) {
+    return{
+      timer: null,
+      totalTime: 10,
+      resetButton: false,
+    }
   },
   methods: {
     startTimer: function() {
       this.timer = setInterval(() => this.countdown(), 1000);
       this.resetButton = true;
-      this.title = "Greatness is within sight!!"
     },
     stopTimer: function() {
       clearInterval(this.timer);
       this.timer = null;
       this.resetButton = true;
-      this.title = "Never quit, keep going!!"
     },
     resetTimer: function() {
-      this.totalTime = (25 * 60);
+      this.totalTime = 10;
       clearInterval(this.timer);
       this.timer = null;
       this.resetButton = false;
-      this.title = "Let the countdown begin!!"
     },
     padTime: function(time) {
       return (time < 10 ? '0' : '') + time;
     },
     countdown: function() {
-      if(this.totalTime >= 1){
-        this.totalTime--;
-      } else{
-        this.totalTime = 0;
-        this.resetTimer()
-      }
+      this.totalTime--;
     }
   },
   computed: {
@@ -104,13 +90,24 @@ export default {
 <style>
 #message {
   color: #DDD;
-  font-size: 50px;
-  margin-bottom: 20px;
+  font-size: 10px;
+  margin-bottom: 10px;
+  margin-right:25%;
 }
 
 #timer {
-  font-size: 200px;
+  font-size: 50px;
   line-height: 1;
-  margin-bottom: 40px;
+  margin-right:20%;
+  margin-top:-40px;
+}
+.timer-title{
+  margin-right:25%;
+}
+.button{
+  background-color:#596B80;
+  color: white;
+  margin-top:10px;
+  margin-right:20%;
 }
 </style>

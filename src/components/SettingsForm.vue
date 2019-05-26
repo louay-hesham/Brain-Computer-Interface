@@ -71,7 +71,7 @@ a {
 .form{
   margin-right : 20%;
   position: relative;
-  top:-80px;
+  top:-30px;
 }
 .button{
   background-color:#596B80;

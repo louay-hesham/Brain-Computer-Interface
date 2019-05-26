@@ -21,9 +21,10 @@
 
     <sui-grid-column>
       <SettingsForm v-on:sendPrediction="getPrediction"></SettingsForm>
+      <TimerApp>
+      </TimerApp>
     </sui-grid-column>
-    <!-- <div class="clock">
-    </div> -->
+
   </sui-grid>
 </div>
 </template>
