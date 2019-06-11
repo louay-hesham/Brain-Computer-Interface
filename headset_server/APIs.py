@@ -34,11 +34,11 @@ def is_ready(request):
 def predict(request):
     global headset
     data = extract_data(request)
-    samples_count = data["samples_count"]
-    freq = data["freq"]
-    delay = data["delay"]
+    samples_count = int(data["samples_count"])
+    freq = int(data["freq"])
+    delay = int(data["delay"])
     print("Quering in", delay, "seconds")
-    time.sleep(delay)
+    # time.sleep(delay)
 
     samples = headset.get_samples_fft(samples_count, 1/freq, print_output=False)
     headset.stop()
