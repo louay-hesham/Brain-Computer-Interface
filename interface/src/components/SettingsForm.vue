@@ -33,13 +33,13 @@ export default {
   methods: {
       settingsSubmit(e){
         e.preventDefault();
-        this.axios.post('https://jsonplaceholder.typicode.com/posts',{
-          title: this.numberOfSamples,
-          body: this.frequency,
-          userId: this.delay
+        this.axios.post('http://127.0.0.1:8000/predict/',{
+          samples_count: this.numberOfSamples,
+          freq: this.frequency,
+          delay: this.delay
         })
         .then((response)=> {
-          this.prediction = response.data.userId
+          this.prediction = response.data.prediction
           this.$emit('sendPrediction', this.prediction)
         })
         .catch((error)=> {
