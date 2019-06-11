@@ -16,5 +16,5 @@ run_django_server_loop()
 echo "Starting Django server";
 export -f run_django_server_loop
 $terminal --window-with-profile=Hold -x bash -c 'run_django_server_loop; bash'
-
-# Run frontend server below
+cd interface
+npm run dev
