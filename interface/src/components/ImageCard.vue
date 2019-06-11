@@ -1,10 +1,10 @@
 <template>
   <div class="image">
     <img src="../assets/standing.jpg" v-if="prediction == -1">
-    <img src="../assets/RightHand.jpg" v-if="prediction == 2">
-    <img src="../assets/LeftHand.jpg" v-if="prediction == 3">
-    <img src="../assets/EyesClosed2.jpg" v-if="prediction == 4">
-    <img src="../assets/BothFeets.jpg" v-if="prediction== 5">
+    <img src="../assets/RightHand.jpg" v-if="prediction == 'right_hand'">
+    <img src="../assets/LeftHand.jpg" v-if="prediction == 'left_hand'">
+    <img src="../assets/EyesClosed2.jpg" v-if="prediction == 'eye_closed'">
+    <img src="../assets/BothFeets.jpg" v-if="prediction== 'both_feet'">
   </div>
 </template>
 <script>
