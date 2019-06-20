@@ -6,7 +6,7 @@ terminal=gnome-terminal;
 
 run_django_server_loop()
 {
-  command="python3 manage.py runserver";
+  command="sudo python manage.py runserver";
   until $command; do
       echo "Server crashed with exit code $?.  Respawning.." >&2
       sleep 0.5
