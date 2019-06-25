@@ -14,13 +14,20 @@
         <label>Delay</label>
         <input type="text" name="delay" placeholder="Delay in seconds" v-model="delay">
       </div>
+       <div class="Time">
+       <TimerApp v-bind:delay="delay" ref="child"></TimerApp>
+      </div>
       <button class="ui button" type="submit">Submit</button>
     </form>
     </div>
 </template>
 <script>
+import TimerApp from './TimerApp'
 export default {
     name: 'settingsForm',
+    components: {
+      TimerApp
+      },
     data() {
        return {
       frequency: '',
@@ -32,7 +39,8 @@ export default {
   methods: {
       settingsSubmit(e){
         e.preventDefault();
-        this.axios.post('http://127.0.0.1:8000/predict/',{
+        this.$refs.child.startTimer().then(()=>{
+          this.axios.post('http://127.0.0.1:8000/predict/',{
           samples_count: this.numberOfSamples,
           freq: this.frequency,
           delay: this.delay
@@ -43,6 +51,7 @@ export default {
         })
         .catch((error)=> {
           console.log(error)
+        })
         })
       }
     }
@@ -75,6 +84,7 @@ a {
 .button{
   background-color:#596B80;
   color: white;
+  margin-right: 20%
 }
 .field>label{
   color: white;
