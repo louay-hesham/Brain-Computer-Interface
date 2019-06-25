@@ -24,6 +24,6 @@ if __name__ == "__main__":
                     total_data.append(data)
                 time.sleep(1/128)
 
-            sio.savemat(c + ".mat", {"emotiv_7sub_5class": np.array(total_data)})
+            sio.savemat(c + "_catherine.mat", {"emotiv_7sub_5class": np.array(total_data)})
             print("10 seconds break")
             time.sleep(10)
