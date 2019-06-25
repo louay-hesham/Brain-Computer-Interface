@@ -70,7 +70,7 @@ export default {
       return (time < 10 ? '0' : '') + time;
     },
     countdown: function() {
-      this.totalTime--; if (this.totalTime ==0){
+      if (this.totalTime ==0){
         this.resetTimer();
       }
       else {
