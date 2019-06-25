@@ -8,7 +8,7 @@ import seaborn as sns
 from scipy import signal
 from sklearn import preprocessing
 
-def extract_features(samples, print_log=False):
+def extract_features(samples, print_log=True):
     global prediction
     # this function is used to transfer one column label to one hot label
     def one_hot(y_):

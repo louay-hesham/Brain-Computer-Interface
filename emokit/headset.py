@@ -27,6 +27,13 @@ class Headset(Emotiv):
         self.thread.start()
 
     def get_samples_fft(self, n_samples, period, print_output=False):
+        samples = self.get_samples(n_samples, period, print_output)
+        transposed = [list(i) for i in zip(*samples)] ## Transpose so each sub-array is the data of a channel in time domain
+        fft_transposed = [rfft(np.array(i)) for i in transposed] ## Compute FFT (real values)
+        fft_samples = [list(np.round(i, 0)) for i in zip(*fft_transposed)] ## Transpose again so each channel is in a column instead of a row, rounds to the nearest unit while transposing
+        return fft_samples[1:]
+
+    def get_samples(self, n_samples, period, print_output=False):
         samples = []
         sample = None
         while sample == None:
@@ -37,10 +44,7 @@ class Headset(Emotiv):
             if not sample == None:
                 samples.append(sample)
                 time.sleep(period)
-        transposed = [list(i) for i in zip(*samples)] ## Transpose so each sub-array is the data of a channel in time domain
-        fft_transposed = [rfft(np.array(i)) for i in transposed] ## Compute FFT (real values)
-        fft_samples = [list(np.round(i, 0)) for i in zip(*fft_transposed)] ## Transpose again so each channel is in a column instead of a row, rounds to the nearest unit while transposing
-        return fft_samples[1:]
+        return samples
 
     def get_sample(self, print_output=False):
         data = self.get_sensors_raw_data(print_output)

@@ -6,11 +6,11 @@ import numpy as np
 from prediction import extract_features
 
 if __name__ == "__main__":
-    model = pickle.load(open("model.dat", "rb"))
+    model = pickle.load(open("pima.pickle.dat", "rb"))
     with Headset() as headset:
-        print("Quering in 5 seconds")
-        time.sleep(5)
-        samples = headset.get_samples_fft(100, 1/128, print_output=False)
+        print("Quering in 10 seconds")
+        time.sleep(10)
+        samples = headset.get_samples_fft(256, 1/128, print_output=False)
     samples_extra_features, label_testing = extract_features(samples, print_log=True)
     samples_extra_features = np.array(samples_extra_features)
     samples_extra_features = xgb.DMatrix(samples_extra_features)
@@ -20,7 +20,7 @@ if __name__ == "__main__":
                                                         for i in range((label_testing.shape[0]))
                                                         for j in range (label_testing.shape[1])) / float(len(label_testing)))))
 
-    intent_labeling = np.array(['','eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet'])
+    intent_labeling = np.array(['', 'up', 'down', 'left', 'right', 'middle', 'eyes_closed'])
     pred_argmax = np.argmax(predictions,1)
     print(pred_argmax.shape)
     print(pred_argmax)
