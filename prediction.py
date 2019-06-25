@@ -43,7 +43,7 @@ def extract_features(samples, print_log=True):
     #  Data loading
     # insert here (don't remove the '1')
     for sample in samples:
-        sample.append(1)
+        sample.append(random.randint(0,4))
     all = np.array(samples)
 
     if print_log:
@@ -52,43 +52,58 @@ def extract_features(samples, print_log=True):
 
     np.random.shuffle(all)   # mix eeg_all
     # Get the 28000 samples of that subject
-    final=1
+    final=len(all)
+    print(final)
     all=all[0:final]
+    temp = all[final-1]
+    temp = np.reshape(temp, (1,15))
+    print(temp.shape)
+    all = np.append(all, temp, axis=0)
+
 
     # Get the features
     feature_all =all[:,0:14]
+
+
     # Get the label
-    label=all[:,14:15]
+    labels=all[:,14]
 
     # z-score
 
-    if print_log:
-	    print(feature_all)
-	    print(feature_all.shape)
+    print("Feature All")
+    print(feature_all)
+    # transposed = [list(i) for i in zip(*feature_all)] ## Transpose so each sub-array is the data of a channel in time domain
+    # fft_transposed = [rfft(np.array(i)) for i in transposed] ## Compute FFT (real values)
+    # fft_samples = [list(np.round(i, 0)) for i in zip(*fft_transposed)] ## Transpose again so each channel is in a column instead of a row, rounds to the nearest unit while transposing
+    # feature_all = fft_samples[0:]
+
+    # feature_all = np.asarray(feature_all)
     no_fea=feature_all.shape[-1]
-    label_all=label
-    if print_log:
-	    print("")
-	    print (label_all)
+    labels = labels.astype(int)
+
+    print("labels")
+    print(labels)
+    labels_all=one_hot(labels)
+    print("")
+    print (labels_all)
 
     sns.set(font_scale=1.2)
-    if print_log:
-	    print("before")
-	    print(feature_all)
+    print("before")
+    print(feature_all)
     feature_all = (__standardize(feature_all))
-    if print_log:
-	    print("After")
-	    print(feature_all)
+    print("after")
+
+    print(feature_all)
 
     data = feature_all
 
     # Define sampling frequency and time vector
-    sf = 160
+    sf = 128
     time = np.arange(data.shape[0]) / sf
-    if print_log:
-	    print(data.shape)
-	    print('time')
-	    print(time.shape)
+    print('data')
+    print(data.shape)
+    print('time')
+    print(time.shape)
     # Plot the signal
     fig, ax = plt.subplots(1, 1, figsize=(12, 4))
     plt.plot(time, data, lw=1.5, color='k')
@@ -98,40 +113,29 @@ def extract_features(samples, print_log=True):
     plt.title('EEG Data')
     sns.despine()
 
-     # Define window length (4 seconds)
     win = 0.5 * sf
     freqs, psd = signal.welch(data, sf, nperseg=win)
-    if print_log:
-	    print(freqs)
-	    print('psd')
-	    print(psd.shape)
+    print('freqs')
+    print(freqs)
+    print('psd')
+    print(psd)
 
-    n_classes=1
+    n_classes=5
     ###CNN code,
     feature_all=feature_all# the input data of CNN
-    if print_log:
-	    print ("cnn input feature shape", feature_all.shape)
-    n_fea=14
-    if print_log:
-	    print(n_fea)
-    # label_all=one_hot(label_all)
+    print ("cnn input feature shape", feature_all.shape)
+    n_fea=feature_all.shape[-1]
+    print(n_fea)
+    # labels_all=one_hot(labels_all)
 
     final=all.shape[0]
     middle_number=int(final*3/4)
-    if print_log:
-	    print("-----",middle_number)
-    feature_training =feature_all[0:middle_number]
-    feature_testing =feature_all[middle_number:final]
-    label_training =label_all[0:middle_number]
-    label_testing =label_all[middle_number:final]
-    label_ww=label_all[middle_number:final]  # for the confusion matrix
-    if print_log:
-	    print ("label_testing",label_testing.shape)
+    print("-----",middle_number)
+    feature_training =feature_all[0:final]
+    label_training =labels_all[0:final]
     a=feature_training
-    b=feature_testing
-    if print_log:
-	    print(feature_training.shape)
-	    print(feature_testing.shape)
+    print(feature_training.shape)
+
 
     keep=1
     batch_size=final-middle_number
@@ -140,20 +144,18 @@ def extract_features(samples, print_log=True):
     for i in range(n_group):
         f =a[(0+batch_size*i):(batch_size+batch_size*i)]
         train_fea.append(f)
-    if print_log:
-	    print("Here")
-	    print (train_fea[0].shape)
+    print("Here")
+    print (train_fea[0].shape)
 
     train_label=[]
     for i in range(n_group):
         f =label_training[(0+batch_size*i):(batch_size+batch_size*i), :]
         train_label.append(f)
-    if print_log:
-	    print (train_label[0].shape)
+    print (train_label[0].shape)
 
     # the CNN code
     def compute_accuracy(v_xs, v_ys):
-
+        global prediction
         y_pre = sess3.run(prediction, feed_dict={xs: v_xs, keep_prob: keep})
         correct_prediction = tf.equal(tf.argmax(y_pre,1), tf.argmax(v_ys,1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -166,9 +168,8 @@ def extract_features(samples, print_log=True):
         initial = tf.truncated_normal(shape, stddev=0.1)
         # A variable maintains state in the graph across calls to run().
         # You add a variable to the graph by constructing an instance of the class Variable.
-        if print_log:
-	        print('shape')
-	        print(shape)
+        print('shape')
+        print(shape)
         return tf.Variable(initial)
 
     #random bias values
@@ -193,15 +194,17 @@ def extract_features(samples, print_log=True):
         return tf.nn.max_pool(x, ksize=[1,1,2,1], strides=[1,1,2,1], padding='SAME')
 
     # define placeholder for inputs to network
-    xs = tf.placeholder(tf.float32, [None, n_fea]) # 1*64
+    xs = tf.placeholder(tf.float32, [None, n_fea]) # 1*14
     ys = tf.placeholder(tf.float32, [None, n_classes])  # 2 is the classes of the data
     # Lookup what is keep_prob
     keep_prob = tf.placeholder(tf.float32)
     x_image = tf.reshape(xs, [-1, 1, n_fea, 1])
-    if print_log:
-	    print('x_image')
-	    print(x_image)
-	    print(x_image.shape)
+    print('xs')
+    print(xs)
+    print(xs.shape)
+    print('x_image')
+    print(x_image)
+    print(x_image.shape)
 
     ## conv1 layer ##
     W_conv1 = weight_variable([1,1, 1,20]) # patch 1*1, in size is 1, out size is 2
@@ -216,10 +219,10 @@ def extract_features(samples, print_log=True):
     # h_pool2 = max_pool_1x2(h_conv2)                          # output size 1*16*4
 
     ## fc1 layer ## fc fully connected layer
-    W_fc1 = weight_variable([1*int(n_fea/2)*20, 120])
+    W_fc1 = weight_variable([int(1*(n_fea/2)*20), 120])
     b_fc1 = bias_variable([120])
     # [n_samples, 7, 7, 64] ->> [n_samples, 7*7*64]
-    h_pool2_flat = tf.reshape(h_pool1, [-1, 1*int(n_fea/2)*20])
+    h_pool2_flat = tf.reshape(h_pool1, [-1, int(1*(n_fea/2)*20)])
     h_fc1 = tf.nn.sigmoid(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
     h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
@@ -248,46 +251,35 @@ def extract_features(samples, print_log=True):
         # Train the model
         for i in range(n_group):
             sess3.run(train_step, feed_dict={xs: train_fea[i], ys: train_label[i], keep_prob:keep})
-        # After 5 steps, use the model on the test data
-        if step % 5 == 0:
-            # Compute the cost using the cross entropy
-            cost=sess3.run(cross_entropy, feed_dict={xs: b, ys: label_testing, keep_prob: keep})
-            # Compute the accuracy
-            acc_cnn_t=compute_accuracy(b, label_testing)
-            if print_log:
-	            print('the step is:',step,',the acc is',acc_cnn_t,', the cost is', cost)
+
         step+=1
-    acc_cnn=compute_accuracy(b, label_testing)
     feature_all_cnn=sess3.run(h_fc1_drop, feed_dict={xs: feature_all, keep_prob: keep})
-    if print_log:
-	    print ("the shape of cnn output features",feature_all.shape,label_all.shape)
+    print ("the shape of cnn output features",feature_all.shape,labels_all.shape)
 
     #######RNN
     tf.reset_default_graph()
+
     feature_all=feature_all
     no_fea=feature_all.shape[-1]
-    if print_log:
-	    print (no_fea)
+    print (no_fea)
     # The input to each LSTM layer must be a 3D
     # feature_all.reshape(samples-batch size-,time step, features)
 
     feature_all =feature_all.reshape([final,1,no_fea])
     #argmax returns the index with the largest value across axis of a tensor
-    if print_log:
-	    print (tf.argmax(label_all,1))
-	    print (feature_all_cnn.shape)
+    print (tf.argmax(labels_all,1))
+
+    print("labels shape")
+    print (labels_all.shape)
+    print("features shape")
+    print(feature_all.shape)
 
     # middle_number=21000
-    feature_training =feature_all
-    feature_testing =feature_all
-    label_training =label_all
-    label_testing =label_all
+    feature_training =feature_all[0:final]
+    label_training =labels_all[0:final]
     # print "label_testing",label_testing
     a=feature_training
-    b=feature_testing
-    if print_log:
-	    print(feature_all)
-	    print(feature_testing.shape)
+    print(feature_training.shape)
     #264 dimention vector, that is passed to the next layer
     nodes=264
     #Used for Weight regulrization
@@ -297,21 +289,19 @@ def extract_features(samples, print_log=True):
 
     batch_size=final-middle_number
     train_fea=[]
-    n_group=1
+    n_group=4
     for i in range(n_group):
         f =a[(0+batch_size*i):(batch_size+batch_size*i)]
         train_fea.append(f)
 
-    if print_log:
-	    print("here0")
-	    print (train_fea[0].shape)
+    print("here")
+    print (train_fea[0].shape)
 
     train_label=[]
     for i in range(n_group):
         f =label_training[(0+batch_size*i):(batch_size+batch_size*i), :]
         train_label.append(f)
-    if print_log:
-	    print (train_label[0].shape)
+    print (train_label[0].shape)
 
 
     # hyperparameters
@@ -387,25 +377,25 @@ def extract_features(samples, print_log=True):
         # lstm cell is divided into two parts (c_state, h_state)
         #Initializing the zero state
         init_state = lstm_cell.zero_state(batch_size, dtype=tf.float32)
-        with tf.variable_scope('lstm1', reuse=tf.AUTO_REUSE):
+
+        with tf.variable_scope('lstm1'):
             # 'state' is a tensor of shape [batch_size, cell_state_size]
             outputs, final_state = tf.nn.dynamic_rnn(lstm_cell, X_in, initial_state=init_state, time_major=False)
 
         # hidden layer for output as the final results
         #############################################
-        if print_log:
-	        print("before")
-	        print(outputs)
+        print("before")
+        print(outputs)
         outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))    # states is the last outputs
-        if print_log:
-	        print("after")
-	        print(outputs)
+        print("after")
+        print(outputs)
         #there are n input and n output we take only the last output to feed to the next layer
         results = tf.matmul(outputs[-1], weights['out']) + biases['out']
 
         return results, outputs[-1]
 
     #################################################################################################################################################
+
     pred,Feature = RNN(x, weights, biases)
     lamena =lameda
     l2 = lamena * sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())  # L2 loss prevents this overkill neural network to overfit the data
@@ -421,6 +411,8 @@ def extract_features(samples, print_log=True):
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     confusion_m=tf.confusion_matrix(tf.argmax(y, 1), tf.argmax(pred, 1))
     #starting sessions
+
+
     with tf.Session() as sess:
         if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[0]) < 1:
             init = tf.initialize_all_variables()
@@ -429,40 +421,21 @@ def extract_features(samples, print_log=True):
         sess.run(init)
         saver = tf.train.Saver()
         step = 0
-        if print_log:
-	        print(train_fea[0])
-	        print(train_label[0])
+
+
 
         #downloaded = drive.CreateFile({'id':'10p_NuiBV2Or2sk6cm0yPLfu9tJ2lXEKg'})
         #f2 = downloaded.GetContentString()
 
         #filename = "/home/xiangzhang/scratch/results/rnn_acc.csv"
         #f2 = open(filename, 'wb')
-        while step < 2500:
+        while step < 350:
+            for i in range(n_group):
                 sess.run(train_op, feed_dict={
-                    x: train_fea[0],
-                    y: train_label[0],
+                    x: train_fea[i],
+                    y: train_label[i],
                 })
-                if sess.run(accuracy, feed_dict={x: b,y: label_testing,})>0.96:
-                    print(
-                    "The lamda is :", lamena, ", Learning rate:", lr, ", The step is:", step, ", The accuracy is: ",
-                    sess.run(accuracy, feed_dict={
-                        x: b,
-                        y: label_testing,
-                    }))
-
-                    break
-                if step % 5 == 0:
-                    hh=sess.run(accuracy, feed_dict={
-                        x: b,
-                        y: label_testing,
-                    })
-                    #f2.write(str(hh)+'\n')
-                    print(", The step is:",step,", The accuracy is:", hh, "The cost is :",sess.run(cost, feed_dict={
-                        x: b,
-                        y: label_testing,
-                    }))
-                step += 1
+            step += 1
 
         ##confusion matrix
         feature_0=sess.run(Feature, feed_dict={x: train_fea[0]})
@@ -470,17 +443,9 @@ def extract_features(samples, print_log=True):
             feature_11=sess.run(Feature, feed_dict={x: train_fea[i]})
             feature_0=np.vstack((feature_0,feature_11))
 
-        if print_log:
-	        print (feature_0.shape)
-        feature_b = sess.run(Feature, feed_dict={x: b})
-        feature_all_rnn=np.vstack((feature_0,feature_b))
+        print (feature_0.shape)
+        feature_all_rnn=feature_0
 
-        confusion_m=sess.run(confusion_m, feed_dict={
-                    x: b,
-                    y: label_testing,
-                })
-        if print_log:
-	        print (confusion_m)
         ## predict probility
         # pred_prob=sess.run(pred, feed_dict={
         #             x: b,
@@ -491,37 +456,35 @@ def extract_features(samples, print_log=True):
 
         #print ("RNN train time:", time4 - time3, "Rnn test time", time5 - time4, 'RNN total time', time5 - time3)
 
-        ##AE
-    if print_log:
-	    print (feature_all_rnn.shape, feature_all_cnn.shape)
-    new_feature_all_rnn = feature_all_rnn[0:1, :]
-    if print_log:
-	    print(new_feature_all_rnn.shape)
+    ##AE
+    print (feature_all_rnn.shape, feature_all_cnn.shape)
+    print (feature_all_rnn, feature_all_cnn)
     # stacks the featurese from RNN and CNN in a horizontal stack
-    feature_all=np.hstack((new_feature_all_rnn,psd) )
-    feature_all=np.hstack((feature_all,feature_all_cnn))
-    if print_log:
-	    print(psd.shape, feature_all.shape)
+    print("LOG HENAAAAAAAAAAA")
+    print(feature_all_rnn.shape)
+    print(psd.shape)
+    feature_all=np.hstack((feature_all_rnn, psd))
+    feature_all=np.hstack((feature_all, feature_all_cnn))
+    print(psd.shape, feature_all.shape)
     no_fea=feature_all.shape[-1]
 
     # feature_all =feature_all.reshape([28000,1,no_fea])
-    if print_log:
-	    print("all features")
-	    print(feature_all.shape)
-    # middle_number=21000
-    feature_training =feature_all
-    feature_testing =feature_all
-    label_training =label_all
-    label_testing =label_all
+    print (labels_all.shape)
+
+    feature_training =feature_all[0:middle_number]
+    feature_testing =feature_all[middle_number:final]
+    label_training =labels_all[0:middle_number]
+    label_testing =labels_all[middle_number:final]
     # print "label_testing",label_testing
     a=feature_training
     b=feature_testing
     feature_all=feature_all
+    print(feature_all.shape)
 
-    train_fea=feature_all
+    train_fea=feature_all[0:middle_number]
 
     #dividing the input into three groups
-    group=1
+    group=3
     display_step = 10
     #An epoch is a full iteration over samples!!!! training cycle
     training_epochs = 400
@@ -533,11 +496,9 @@ def extract_features(samples, print_log=True):
     n_hidden_2=100
 
     n_input_ae = no_fea # MNIST data input (img shape: 28*28)
+
     # tf Graph input (only pictures)
     X = tf.placeholder("float", [None, n_input_ae])
-    if print_log:
-	    print("X")
-	    print(X)
 
     weights = {
         'encoder_h1': tf.Variable(tf.random_normal([n_input_ae, n_hidden_1])),
@@ -576,9 +537,6 @@ def extract_features(samples, print_log=True):
         for ee in range(1):
             # Construct model
             encoder_op = encoder(X)
-            if print_log:
-	            print("Encoder")
-	            print(encoder_op)
             decoder_op = decoder(encoder_op)
             # Prediction
             y_pred = decoder_op
@@ -607,13 +565,12 @@ def extract_features(samples, print_log=True):
                         _, c = sess1.run([optimizer, cost], feed_dict={X: a})
                     # Display logs per epoch step
                     if epoch % display_step == 0:
-                        if print_log:
-	                        print("Epoch:", '%04d' % (epoch+1),
+                        print("Epoch:", '%04d' % (epoch+1),
                               "cost=", "{:.9f}".format(c))
-                if print_log:
-	                print("Optimization Finished!")
+                print("Optimization Finished!")
                 a = sess1.run(encoder_op, feed_dict={X: a})
                 b = sess1.run(encoder_op, feed_dict={X: b})
+
     return a, label_testing
 
 if __name__ == "__main__":
