@@ -2,15 +2,12 @@ import time
 from emokit.headset import Headset
 
 if __name__ == "__main__":
-    print("Starting in 10 seconds")
-    time.sleep(7)
-    print("Starting in 3 seconds")
-    time.sleep(1)
-    print("Starting in 2 seconds")
-    time.sleep(1)
-    print("Starting in 1 seconds")
-    time.sleep(1)
+    total_data = []
+    time.sleep(5)
+    timeout = time.time() + 30
     with Headset(write=True) as headset:
-        while True:
+        while time.time() < timeout:
             data = headset.get_sample(print_output=True)
+            total_data.append(data)
             time.sleep(1/128)
+        print(total_data)
