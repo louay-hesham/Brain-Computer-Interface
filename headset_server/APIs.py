@@ -53,10 +53,12 @@ def predict(request):
     copy_pred = np.empty(predictions.shape, dtype=object)
     for i in range(predictions.shape[0]):
       copy_pred[i] = intent_labeling[pred_argmax[i]]
-    print(copy_pred[0][0])
+    unique,pos = np.unique(copy_pred,return_inverse=True)
+    counts = np.bincount(pos)
+    maxpos = counts.argmax()
 
     response = {
-    "prediction": copy_pred[0][0]
+    "prediction": unique[maxpos]
     }
     headset.start()
     return HttpResponse(json.dumps(response))
