@@ -14,7 +14,6 @@
         <label>Delay</label>
         <input type="text" name="delay" placeholder="Delay in seconds" v-model="delay">
       </div>
-      <div>{{prediction}}</div>
       <button class="ui button" type="submit">Submit</button>
     </form>
     </div>

@@ -70,7 +70,12 @@ export default {
       return (time < 10 ? '0' : '') + time;
     },
     countdown: function() {
-      this.totalTime--;
+      this.totalTime--; if (this.totalTime ==0){
+        this.resetTimer();
+      }
+      else {
+        this.totalTime--;
+      }
     }
   },
   computed: {
@@ -87,7 +92,6 @@ export default {
 </script>
 
 <style scoped>
-<style>
 #message {
   color: #DDD;
   font-size: 10px;
