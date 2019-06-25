@@ -55,7 +55,7 @@ export default {
     startTimer: function() {
       this.totalTime = this.delay
       this.timer = setInterval(() => this.countdown(), 1000);
-      this.resetButton = true;
+      //this.resetButton = true;
     },
     stopTimer: function() {
       clearInterval(this.timer);
@@ -77,6 +77,7 @@ export default {
     countdown: function() {
       if (this.totalTime ==0){
         this.resetTimer();
+         this.$emit('announceDone')
       }
       else {
         this.totalTime--;

@@ -15,7 +15,7 @@
         <input type="text" name="delay" placeholder="Delay in seconds" v-model="delay">
       </div>
        <div class="Time">
-       <TimerApp v-bind:delay="delay" ref="child"></TimerApp>
+       <TimerApp v-bind:delay="delay" v-on:announceDone="predict" ref="child" v-show="showTimer"></TimerApp>
       </div>
       <button class="ui button" type="submit">Submit</button>
     </form>
@@ -33,29 +33,33 @@ export default {
       frequency: '',
       delay: '',
       numberOfSamples: '',
-      prediction: -1
+      prediction: ' ',
+      showTimer: false
     }
   },
   methods: {
       settingsSubmit(e){
         e.preventDefault();
-        this.$refs.child.startTimer().then(()=>{
-          this.axios.post('http://127.0.0.1:8000/predict/',{
-          samples_count: this.numberOfSamples,
-          freq: this.frequency,
-          delay: this.delay
-        })
-        .then((response)=> {
-          this.prediction = response.data.prediction
-          this.$emit('sendPrediction', this.prediction)
-        })
-        .catch((error)=> {
-          console.log(error)
-        })
-        })
-      }
+        this.showTimer = true
+        this.$refs.child.startTimer()
+    }
+    ,predict(){
+      this.showTimer = false;
+      this.axios.post('http://127.0.0.1:8000/predict/',{
+        samples_count: this.numberOfSamples,
+        freq: this.frequency,
+        delay: this.delay
+      })
+      .then((response)=> {
+        this.prediction = response.data.prediction
+        this.$emit('sendPrediction', this.prediction)
+      })
+      .catch((error)=> {
+        console.log(error)
+      })
     }
   }
+}
 </script>
 
 <style scoped>
