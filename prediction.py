@@ -17,6 +17,28 @@ def extract_features(samples, print_log=True):
         y_ = y_.reshape(len(y_))
         n_values = np.max(y_) + 1
         return np.eye(n_values)[np.array(y_, dtype=np.int32)]
+		
+	def __standardize(data) :
+    # Store the data's original shape
+    shape = data.shape
+    # Flatten the data to 1 dimension
+    print(data)
+    # Find mean and standard deviation
+    mean = np.mean(data)
+    std = np.std(data)
+    print(mean)
+    # Create a new array for storing standardized values
+    standardized_values = list()
+    # Iterate through every value in data
+    for x in data:
+        # standardize
+        x_normalized = (x - mean) / std
+        # Append it in the array
+        standardized_values.append(x_normalized)
+    # Convert to numpy array
+    n_array = np.array(standardized_values)
+    # Reshape the array to its original shape and return it.
+    return np.reshape(n_array, shape)
 
     #  Data loading
     # insert here (don't remove the '1')
@@ -53,7 +75,7 @@ def extract_features(samples, print_log=True):
     if print_log:
 	    print("before")
 	    print(feature_all)
-    feature_all=preprocessing.scale(feature_all)
+    feature_all = (__standardize(feature_all))
     if print_log:
 	    print("After")
 	    print(feature_all)
