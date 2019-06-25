@@ -22,8 +22,7 @@
 
     <sui-grid-column>
       <SettingsForm v-on:sendPrediction="getPrediction"></SettingsForm>
-      <TimerApp>
-      </TimerApp>
+
     </sui-grid-column>
 
   </sui-grid>
@@ -44,7 +43,7 @@ export default {
   data() {
     return {
       // start at the very begining with the man standing
-      prediction: -1
+      prediction: '...'
     }
   },
   methods: {
