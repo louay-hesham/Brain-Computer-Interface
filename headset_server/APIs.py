@@ -46,7 +46,8 @@ def predict(request):
     samples_extra_features = np.array(samples_extra_features)
     samples_extra_features = xgb.DMatrix(samples_extra_features)
     predictions = model.predict(samples_extra_features)
-
+    print("Predictions array: ", end='')
+    print(predictions)
     intent_labeling = np.array(['','eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet'])
     pred_argmax = np.argmax(predictions,1)
     copy_pred = np.empty(predictions.shape, dtype=object)
