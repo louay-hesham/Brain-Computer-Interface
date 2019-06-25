@@ -37,8 +37,8 @@ def predict(request):
     samples_count = int(data["samples_count"])
     freq = int(data["freq"])
     delay = int(data["delay"])
-    print("Quering in", delay, "seconds")
-    time.sleep(delay)
+    # print("Quering in", delay, "seconds")
+    # time.sleep(delay)
 
     samples = headset.get_samples(samples_count, 1/freq, print_output=False)
     headset.stop()
@@ -49,16 +49,39 @@ def predict(request):
     print("Predictions array: ", end='')
     print(predictions)
     intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
-    pred_argmax = np.argmax(predictions,1)
-    copy_pred = np.empty(predictions.shape, dtype=object)
-    for i in range(predictions.shape[0]):
-      copy_pred[i] = intent_labeling[pred_argmax[i]]
-    unique,pos = np.unique(copy_pred,return_inverse=True)
-    counts = np.bincount(pos)
-    maxpos = counts.argmax()
+    labels_votes = {
+        'right_hand': 0,
+        'left_hand': 0,
+        'both_hands': 0,
+        'both_feet': 0,
+        'eye_closed': 0
+    }
+    for pred in predictions:
+        argmax = np.argmax(pred)
+        labels_votes[intent_labeling[argmax]] += 1
 
+    max_votes = 0
+    vote = 'right_hand'
+    for label, votes in labels_votes.items():
+        if votes > max_votes:
+            vote = label
+            max_votes = votes
+
+    # pred_argmax = np.argmax(predictions,1)
+    # print(pred_argmax)
+    # copy_pred = np.empty(predictions.shape, dtype=object)
+    # for i in range(predictions.shape[0]):
+    #   copy_pred[i] = intent_labeling[pred_argmax[i]]
+    # unique,pos = np.unique(copy_pred,return_inverse=True)
+    # counts = np.bincount(pos)
+    # maxpos = counts.argmax()
+    # print(unique)
+    # print(unique[maxpos])
+    
+    print(labels_votes)
+    print(vote)
     response = {
-    "prediction": unique[maxpos]
+    "prediction": vote
     }
     headset.start()
     return HttpResponse(json.dumps(response))
