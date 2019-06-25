@@ -40,3 +40,8 @@ if __name__ == "__main__":
     for i in range(predictions.shape[0]):
       copy_pred[i] = intent_labeling[pred_argmax[i]]
     print(copy_pred)
+    
+    unique,pos = np.unique(copy_pred,return_inverse=True)
+    counts = np.bincount(pos)
+    maxpos = counts.argmax()
+    print(unique[maxpos])

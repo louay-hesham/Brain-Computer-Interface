@@ -39,7 +39,7 @@ class Headset(Emotiv):
         while sample == None:
             sample = self.get_sample(print_output)
 
-        for i in range(0,n_samples + 1):
+        while len(samples) < n_samples - 1:
             sample = self.get_sample(print_output)
             if not sample == None:
                 samples.append(sample)
