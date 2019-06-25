@@ -9,20 +9,20 @@
     stackable
     vertical-align="middle"
   >
-
     <sui-grid-column>
       <div class="ui card">
           <ImageCard v-bind:prediction="prediction"></ImageCard>
-          <div class="ui two buttons">
-          <button class="ui button" type="submit">Start</button>
-          </div>
+            <sui-card-content>
+              <sui-card-description>
+               The user is moving his {{prediction}}
+              </sui-card-description>
+            </sui-card-content>
       </div>
     </sui-grid-column>
 
     <sui-grid-column>
       <SettingsForm v-on:sendPrediction="getPrediction"></SettingsForm>
-      <TimerApp>
-      </TimerApp>
+
     </sui-grid-column>
 
   </sui-grid>
@@ -34,7 +34,7 @@ import ImageCard from './ImageCard'
 import SettingsForm from './SettingsForm'
 import TimerApp from './TimerApp'
 export default {
-  name: 'Trial',
+  name: 'interface_app',
   components: {
       ImageCard,
       SettingsForm,
@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       // start at the very begining with the man standing
-      prediction: -1
+      prediction: '...'
     }
   },
   methods: {
@@ -90,5 +90,14 @@ a {
 .button{
   background-color:#596B80;
   color: white;
+}
+.ui.card>.content{
+  background-color:#596B80;
+}
+.ui.card>.content>.description {
+  clear: both;
+  color: white;
+  font-weight: bold;
+  font-size: larger
 }
 </style>

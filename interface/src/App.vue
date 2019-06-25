@@ -1,20 +1,15 @@
 <template>
   <div id="app">
-    <Trial/>
+    <InterfaceCard/>
   </div>
 </template>
 
 <script>
-import Trial from './components/Trial'
+import InterfaceCard from './components/InterfaceCard'
 export default {
   name: 'app',
   components: {
-    Trial
-  },
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
+    InterfaceCard
   }
 }
 </script>

@@ -11,29 +11,29 @@
 
       <div id="buttons">
     <!--     Start TImer -->
-        <button
+        <!-- <button
           id="start"
           class="ui button"
           v-if="!timer"
           @click="startTimer">
             <i>Start</i>
-        </button>
+        </button> -->
     <!--     Pause Timer -->
-        <button
+        <!-- <button
           id="stop"
           class="ui button"
           v-if="timer"
           @click="stopTimer">
             <i>Stop</i>
-        </button>
+        </button> -->
     <!--     Restart Timer -->
-        <button
+        <!-- <button
           id="reset"
           class="ui button"
           v-if="resetButton"
           @click="resetTimer">
             <i>Reset</i>
-        </button>
+        </button> -->
       </div>
     </div>
     </section>
@@ -46,14 +46,16 @@ export default {
   data( ) {
     return{
       timer: null,
-      totalTime: 10,
+      totalTime: 0,
       resetButton: false,
     }
   },
+   props: ['delay'],
   methods: {
     startTimer: function() {
+      this.totalTime = this.delay
       this.timer = setInterval(() => this.countdown(), 1000);
-      this.resetButton = true;
+      //this.resetButton = true;
     },
     stopTimer: function() {
       clearInterval(this.timer);
@@ -61,16 +63,25 @@ export default {
       this.resetButton = true;
     },
     resetTimer: function() {
-      this.totalTime = 10;
+      this.totalTime = this.delay;
       clearInterval(this.timer);
       this.timer = null;
       this.resetButton = false;
     },
     padTime: function(time) {
-      return (time < 10 ? '0' : '') + time;
+      if (time < 10){
+        return (time < this.delay ? '0' : '') + time;
+      }
+      else return time;
     },
     countdown: function() {
-      this.totalTime--;
+      if (this.totalTime ==0){
+        this.resetTimer();
+         this.$emit('announceDone')
+      }
+      else {
+        this.totalTime--;
+      }
     }
   },
   computed: {
@@ -87,7 +98,6 @@ export default {
 </script>
 
 <style scoped>
-<style>
 #message {
   color: #DDD;
   font-size: 10px;

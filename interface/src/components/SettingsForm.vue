@@ -14,40 +14,52 @@
         <label>Delay</label>
         <input type="text" name="delay" placeholder="Delay in seconds" v-model="delay">
       </div>
-      <div>{{prediction}}</div>
+       <div class="Time">
+       <TimerApp v-bind:delay="delay" v-on:announceDone="predict" ref="child" v-show="showTimer"></TimerApp>
+      </div>
       <button class="ui button" type="submit">Submit</button>
     </form>
     </div>
 </template>
 <script>
+import TimerApp from './TimerApp'
 export default {
     name: 'settingsForm',
+    components: {
+      TimerApp
+      },
     data() {
        return {
       frequency: '',
       delay: '',
       numberOfSamples: '',
-      prediction: -1
+      prediction: ' ',
+      showTimer: false
     }
   },
   methods: {
       settingsSubmit(e){
         e.preventDefault();
-        this.axios.post('http://127.0.0.1:8000/predict/',{
-          samples_count: this.numberOfSamples,
-          freq: this.frequency,
-          delay: this.delay
-        })
-        .then((response)=> {
-          this.prediction = response.data.prediction
-          this.$emit('sendPrediction', this.prediction)
-        })
-        .catch((error)=> {
-          console.log(error)
-        })
-      }
+        this.showTimer = true
+        this.$refs.child.startTimer()
+    }
+    ,predict(){
+      this.showTimer = false;
+      this.axios.post('http://127.0.0.1:8000/predict/',{
+        samples_count: this.numberOfSamples,
+        freq: this.frequency,
+        delay: this.delay
+      })
+      .then((response)=> {
+        this.prediction = response.data.prediction
+        this.$emit('sendPrediction', this.prediction)
+      })
+      .catch((error)=> {
+        console.log(error)
+      })
     }
   }
+}
 </script>
 
 <style scoped>
@@ -76,6 +88,7 @@ a {
 .button{
   background-color:#596B80;
   color: white;
+  margin-right: 20%
 }
 .field>label{
   color: white;
