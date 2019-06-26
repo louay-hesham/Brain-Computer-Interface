@@ -6,6 +6,7 @@ import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import signal
+import scipy.io
 from sklearn import preprocessing
 
 def extract_features(samples, print_log=True):
@@ -50,15 +51,11 @@ def extract_features(samples, print_log=True):
 	    print('shape')
 	    print (all.shape)
 
-    np.random.shuffle(all)   # mix eeg_all
+    #np.random.shuffle(all)   # mix eeg_all
     # Get the 28000 samples of that subject
     final=len(all)
     print(final)
     all=all[0:final]
-    temp = all[final-1]
-    temp = np.reshape(temp, (1,15))
-    print(temp.shape)
-    all = np.append(all, temp, axis=0)
 
 
     # Get the features
@@ -90,9 +87,11 @@ def extract_features(samples, print_log=True):
     sns.set(font_scale=1.2)
     print("before")
     print(feature_all)
-    feature_all = (__standardize(feature_all))
-    print("after")
+    #feature_all = (__standardize(feature_all))
+    feature_all = preprocessing.scale(feature_all)
 
+    print("after")
+    #
     print(feature_all)
 
     data = feature_all
@@ -105,13 +104,7 @@ def extract_features(samples, print_log=True):
     print('time')
     print(time.shape)
     # Plot the signal
-    fig, ax = plt.subplots(1, 1, figsize=(12, 4))
-    plt.plot(time, data, lw=1.5, color='k')
-    plt.xlabel('Time (seconds)')
-    plt.ylabel('Voltage')
-    plt.xlim([time.min(), time.max()])
-    plt.title('EEG Data')
-    sns.despine()
+
 
     win = 0.5 * sf
     freqs, psd = signal.welch(data, sf, nperseg=win)
@@ -139,7 +132,7 @@ def extract_features(samples, print_log=True):
 
     keep=1
     batch_size=final-middle_number
-    n_group=1
+    n_group=3
     train_fea=[]
     for i in range(n_group):
         f =a[(0+batch_size*i):(batch_size+batch_size*i)]
@@ -255,7 +248,9 @@ def extract_features(samples, print_log=True):
         step+=1
     feature_all_cnn=sess3.run(h_fc1_drop, feed_dict={xs: feature_all, keep_prob: keep})
     print ("the shape of cnn output features",feature_all.shape,labels_all.shape)
-
+    print("HERE LIES THE CNN")
+    print(feature_all_cnn)
+    scipy.io.savemat("feature_all_cnn.mat", {"feature_all_cnn": feature_all_cnn})
     #######RNN
     tf.reset_default_graph()
 
@@ -289,7 +284,7 @@ def extract_features(samples, print_log=True):
 
     batch_size=final-middle_number
     train_fea=[]
-    n_group=4
+    n_group=3
     for i in range(n_group):
         f =a[(0+batch_size*i):(batch_size+batch_size*i)]
         train_fea.append(f)
@@ -384,11 +379,8 @@ def extract_features(samples, print_log=True):
 
         # hidden layer for output as the final results
         #############################################
-        print("before")
-        print(outputs)
+
         outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))    # states is the last outputs
-        print("after")
-        print(outputs)
         #there are n input and n output we take only the last output to feed to the next layer
         results = tf.matmul(outputs[-1], weights['out']) + biases['out']
 
