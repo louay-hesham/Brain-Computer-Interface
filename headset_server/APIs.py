@@ -7,6 +7,7 @@ import pickle
 import xgboost as xgb
 import numpy as np
 import time
+from CNN_classification import predict_cnn
 
 model = pickle.load(open("local_model.dat", "rb"))
 headset = Headset()
@@ -42,26 +43,53 @@ def predict(request):
 
     samples = headset.get_samples(samples_count, 1/freq, print_output=False)
     headset.stop()
-    samples_extra_features, label_testing = extract_features(samples, print_log=True)
-    samples_extra_features = np.array(samples_extra_features)
-    samples_extra_features = xgb.DMatrix(samples_extra_features)
-    predictions = model.predict(samples_extra_features)
-    print("Predictions array: ", end='')
-    print(predictions)
-    intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
-    # intent_labeling = np.array(['','eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet'])
+    # samples_extra_features, label_testing = extract_features(samples, print_log=True)
+    # samples_extra_features = np.array(samples_extra_features)
+    # samples_extra_features = xgb.DMatrix(samples_extra_features)
+    # predictions = model.predict(samples_extra_features)
+    # print("Predictions array: ", end='')
+    # print(predictions)
+    # intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
+    # # intent_labeling = np.array(['','eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet'])
+    #
+    # labels_votes = {
+    #     # '': 0,
+    #     'right_hand': 0,
+    #     'left_hand': 0,
+    #     'both_hands': 0,
+    #     'both_feet': 0,
+    #     'eye_closed': 0
+    # }
+    # for pred in predictions:
+    #     argmax = np.argmax(pred)
+    #     labels_votes[intent_labeling[argmax]] += 1
+    #
+    # max_votes = 0
+    # vote = 'right_hand'
+    # for label, votes in labels_votes.items():
+    #     if votes > max_votes:
+    #         vote = label
+    #         max_votes = votes
+    #
+    # print(labels_votes)
+    # print(vote)
 
+    predictions = predict_cnn(samples)
+    print("Predictions")
+    print(predictions)
+    print(len(predictions))
+
+    intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
     labels_votes = {
-        # '': 0,
         'right_hand': 0,
         'left_hand': 0,
         'both_hands': 0,
         'both_feet': 0,
         'eye_closed': 0
     }
+
     for pred in predictions:
-        argmax = np.argmax(pred)
-        labels_votes[intent_labeling[argmax]] += 1
+        labels_votes[intent_labeling[pred]] += 1
 
     max_votes = 0
     vote = 'right_hand'
@@ -69,19 +97,8 @@ def predict(request):
         if votes > max_votes:
             vote = label
             max_votes = votes
-
     print(labels_votes)
     print(vote)
-    # pred_argmax = np.argmax(predictions,1)
-    # print(pred_argmax)
-    # copy_pred = np.empty(predictions.shape, dtype=object)
-    # for i in range(predictions.shape[0]):
-    #   copy_pred[i] = intent_labeling[pred_argmax[i]]
-    # unique,pos = np.unique(copy_pred,return_inverse=True)
-    # counts = np.bincount(pos)
-    # maxpos = counts.argmax()
-    # print(unique)
-    # print(unique[maxpos])
 
     response = {
     "prediction": vote

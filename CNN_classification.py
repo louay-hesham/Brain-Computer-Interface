@@ -211,7 +211,7 @@ def predict_cnn(samples):
     # Total number of array elements which trigger summarization rather than full array
     #np.set_printoptions(threshold=np.nan)
     step = 1
-    while step < 5:
+    while step < 200:
         # Train the model
         print("Step is " + str(step))
         for i in range(n_group):
