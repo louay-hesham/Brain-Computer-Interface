@@ -49,8 +49,10 @@ def predict(request):
     print("Predictions array: ", end='')
     print(predictions)
     intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
+    # intent_labeling = np.array(['','eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet'])
 
     labels_votes = {
+        # '': 0,
         'right_hand': 0,
         'left_hand': 0,
         'both_hands': 0,
@@ -67,6 +69,9 @@ def predict(request):
         if votes > max_votes:
             vote = label
             max_votes = votes
+
+    print(labels_votes)
+    print(vote)
     # pred_argmax = np.argmax(predictions,1)
     # print(pred_argmax)
     # copy_pred = np.empty(predictions.shape, dtype=object)
@@ -78,8 +83,6 @@ def predict(request):
     # print(unique)
     # print(unique[maxpos])
 
-    print(labels_votes)
-    print(vote)
     response = {
     "prediction": vote
     }
