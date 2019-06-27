@@ -18,7 +18,7 @@ def predict_cnn(samples):
         return np.eye(n_values)[np.array(y_, dtype=np.int32)]
 
     #  Data loading
-    feature = sc.loadmat("recordings/louay2_no_eyes.mat")
+    feature = sc.loadmat("recordings/louay_left_right.mat")
 
     all = feature['Eddeny3a2lk']
     print('Feature')
@@ -65,7 +65,7 @@ def predict_cnn(samples):
     print (labels_all)
     feature_all = preprocessing.scale(feature_all)
 
-    n_classes=4
+    n_classes=2
     ###CNN code,
     print ("cnn input feature shape", feature_all.shape)
     n_fea=feature_all.shape[-1]
@@ -215,7 +215,7 @@ def predict_cnn(samples):
     # Total number of array elements which trigger summarization rather than full array
     #np.set_printoptions(threshold=np.nan)
     step = 1
-    while step < 300:
+    while step < 400:
         # Train the model
         print("Step is " + str(step))
         for i in range(n_group):

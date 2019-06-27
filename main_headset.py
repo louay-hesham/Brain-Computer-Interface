@@ -35,7 +35,7 @@ if __name__ == "__main__":
     #                                                     for i in range((label_testing.shape[0]))
     #                                                     for j in range (label_testing.shape[1])) / float(len(label_testing)))))
 
-    mat = scipy.io.loadmat("recordings/Louay2/right_hand.mat")
+    mat = scipy.io.loadmat("recordings/Louay2/left_hand.mat")
     print("I GOT THE MAT FILE")
     data = mat['emotiv_7sub_5class']
     data = data[:, 0:14]
@@ -45,7 +45,9 @@ if __name__ == "__main__":
     print(predictions)
     print(len(predictions))
 
-    intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
+    # intent_labeling = np.array(['right_hand','left_hand', 'both_hands', 'both_feet', 'eye_closed'])
+    # intent_labeling = np.array(['both_hands', 'eye_closed'])
+    intent_labeling = np.array(['right_hand', 'left_hand'])
     labels_votes = {
         'right_hand': 0,
         'left_hand': 0,
