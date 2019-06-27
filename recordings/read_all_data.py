@@ -29,7 +29,7 @@ both_hands_data = np.append(both_hands_data, both_hands_labels, axis=1)
 # both_feet_labels = np.full((both_feet_data.shape[0], 1), 3)
 # both_feet_data = np.append(both_feet_data, both_feet_labels, axis=1)
 
-eye_closed_labels = np.full((eye_closed_data.shape[0], 1), 2)
+eye_closed_labels = np.full((eye_closed_data.shape[0], 1), 1)
 eye_closed_data = np.append(eye_closed_data, eye_closed_labels, axis=1)
 
 # right_hand_data = np.append(right_hand_data, left_hand_data, axis=0)
