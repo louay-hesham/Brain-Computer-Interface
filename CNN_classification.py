@@ -18,7 +18,7 @@ def predict_cnn(samples):
         return np.eye(n_values)[np.array(y_, dtype=np.int32)]
 
     #  Data loading
-    feature = sc.loadmat("recordings/full_local_data.mat")
+    feature = sc.loadmat("recordings/louay2_no_eyes.mat")
 
     all = feature['Eddeny3a2lk']
     print('Feature')
@@ -65,7 +65,7 @@ def predict_cnn(samples):
     print (labels_all)
     feature_all = preprocessing.scale(feature_all)
 
-    n_classes=5
+    n_classes=4
     ###CNN code,
     print ("cnn input feature shape", feature_all.shape)
     n_fea=feature_all.shape[-1]
@@ -82,7 +82,11 @@ def predict_cnn(samples):
     label_ww=labels_all[middle_number:final]  # for the confusion matrix
     print ("label_testing",label_testing.shape)
     # a = np.append(feature_training, feature_testing, axis=0)
-    a = feature_training
+    a = np.append(feature_training, feature_testing, axis=0)
+    label_training = labels_all
+    print(np.array(samples).shape)
+    print(feature_testing.shape)
+    # b = np.append(np.array(samples), feature_testing, axis=0)
     b = np.array(samples)
     print(feature_training.shape)
     print(feature_testing.shape)
@@ -211,7 +215,7 @@ def predict_cnn(samples):
     # Total number of array elements which trigger summarization rather than full array
     #np.set_printoptions(threshold=np.nan)
     step = 1
-    while step < 200:
+    while step < 300:
         # Train the model
         print("Step is " + str(step))
         for i in range(n_group):
@@ -221,6 +225,4 @@ def predict_cnn(samples):
     prediction_arg_max = predict_data(b)
     feature_all_cnn=sess3.run(h_fc1_drop, feed_dict={xs: feature_all, keep_prob: keep})
     print ("the shape of cnn output features",feature_all.shape,labels_all.shape)
-    print("CNN FEATURES")
-    print(feature_all_cnn)
-    return prediction_arg_max
+    return prediction_arg_max[0 : len(samples)]

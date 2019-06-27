@@ -10,11 +10,11 @@ from CNN_classification import predict_cnn
 
 
 if __name__ == "__main__":
-    model = pickle.load(open("local_model.dat", "rb"))
+    # model = pickle.load(open("local_model.dat", "rb"))
     # with Headset() as headset:
     #     print("Quering in 10 seconds")
     #     time.sleep(10)
-    # samples = headset.get_samples(256, 1/128, print_output=False)
+    #     samples = headset.get_samples(256, 1/128, print_output=False)
     # print("DATA")
     # print(data.shape)
     # samples = data.tolist()
@@ -35,9 +35,9 @@ if __name__ == "__main__":
     #                                                     for i in range((label_testing.shape[0]))
     #                                                     for j in range (label_testing.shape[1])) / float(len(label_testing)))))
 
-    mat = scipy.io.loadmat("data_500_samples.mat")
+    mat = scipy.io.loadmat("recordings/Louay2/right_hand.mat")
     print("I GOT THE MAT FILE")
-    data = mat['Eddeny3a2lk']
+    data = mat['emotiv_7sub_5class']
     data = data[:, 0:14]
     np.random.shuffle(data)
     predictions = predict_cnn(data)

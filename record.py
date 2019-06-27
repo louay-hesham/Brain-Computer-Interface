@@ -5,7 +5,7 @@ from emokit.headset import Headset
 
 if __name__ == "__main__":
     with Headset() as headset:
-        for c in ['eye_closed', 'left_hand', 'right_hand', 'both_hands', 'both_feet']:
+        for c in ['left_hand', 'right_hand', 'both_hands', 'both_feet', 'eye_closed']:
             print("Class " + c)
             print("Recording in 10 seconds")
             time.sleep(7)
@@ -24,6 +24,6 @@ if __name__ == "__main__":
                     total_data.append(data)
                 time.sleep(1/128)
 
-            sio.savemat(c + "_catherine.mat", {"emotiv_7sub_5class": np.array(total_data)})
+            sio.savemat(c + ".mat", {"emotiv_7sub_5class": np.array(total_data)})
             print("10 seconds break")
             time.sleep(10)
