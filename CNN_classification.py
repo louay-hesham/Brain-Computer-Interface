@@ -17,7 +17,7 @@ def predict_cnn(samples):
         n_values = np.max(y_) + 1
         return np.eye(n_values)[np.array(y_, dtype=np.int32)]
 
-    #  Data loading
+    # Data loading
     feature = sc.loadmat("recordings/louay_left_right.mat")
 
     all = feature['Eddeny3a2lk']
