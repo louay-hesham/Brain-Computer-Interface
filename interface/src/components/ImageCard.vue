@@ -4,7 +4,8 @@
     <img src="../assets/RightHand.jpg" v-if="prediction == 'right_hand'">
     <img src="../assets/LeftHand.jpg" v-if="prediction == 'left_hand'">
     <img src="../assets/EyesClosed2.jpg" v-if="prediction == 'eye_closed'">
-    <img src="../assets/BothFeets.jpg" v-if="prediction== 'both_feet'">
+    <img src="../assets/BothFeets2.jpg" v-if="prediction== 'both_feet'">
+    <img src="../assets/BothHands.jpg" v-if="prediction== 'both_hands'">
   </div>
 </template>
 <script>
